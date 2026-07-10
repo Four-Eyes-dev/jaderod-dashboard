@@ -1,0 +1,703 @@
+
+<h2 class="sr-only">Jaderod Pharmacy live digital marketing analysis dashboard — Phase 1, June 2026. Includes website traffic, social media, WhatsApp conversions, Google Business, and KPI scorecard with editable data.</h2>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.dash{padding:1rem 0 2rem;font-size:14px}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:8px;padding-bottom:1rem;border-bottom:0.5px solid var(--border)}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:34px;height:34px;border-radius:10px;background:#0F6E56;display:flex;align-items:center;justify-content:center}
+.logo-mark i{font-size:18px;color:#fff}
+.logo-text p:first-child{font-size:15px;font-weight:500;color:var(--text-primary)}
+.logo-text p:last-child{font-size:11px;color:var(--text-muted)}
+.live-badge{display:flex;align-items:center;gap:6px;background:#E1F5EE;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;color:#0F6E56}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#1D9E75;animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.top-right{display:flex;align-items:center;gap:8px}
+.btn{font-size:12px;padding:5px 12px;border-radius:var(--radius);border:0.5px solid var(--border-strong);cursor:pointer;background:transparent;color:var(--text-secondary);transition:all .15s}
+.btn:hover{background:var(--surface-1);color:var(--text-primary)}
+.btn.active{background:#0F6E56;color:#fff;border-color:#0F6E56}
+.period-select{font-size:12px;padding:5px 10px;border-radius:var(--radius);border:0.5px solid var(--border-strong);background:var(--surface-1);color:var(--text-primary);cursor:pointer}
+.nav{display:flex;gap:6px;margin-bottom:1.25rem;flex-wrap:wrap}
+.nav-btn{font-size:12px;padding:5px 14px;border-radius:20px;border:0.5px solid var(--border);cursor:pointer;background:transparent;color:var(--text-secondary);display:flex;align-items:center;gap:5px;transition:all .15s}
+.nav-btn:hover{border-color:var(--border-strong);color:var(--text-primary)}
+.nav-btn.active{background:#0A3D2E;color:#fff;border-color:#0A3D2E}
+.nav-btn i{font-size:13px}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:1.25rem}
+.kpi-card{background:var(--surface-1);border-radius:var(--radius);padding:14px 16px;border:0.5px solid var(--border)}
+.kpi-card.accent{border-color:#1D9E75;background:#E1F5EE}
+.kpi-label{font-size:11px;color:var(--text-muted);margin-bottom:5px}
+.kpi-val{font-size:26px;font-weight:500;color:var(--text-primary);line-height:1;margin-bottom:4px}
+.kpi-card.accent .kpi-val{color:#0F6E56}
+.kpi-delta{font-size:11px;display:flex;align-items:center;gap:3px}
+.delta-up{color:#0F6E56}.delta-down{color:#A32D2D}.delta-neutral{color:var(--text-muted)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px}
+.full{grid-column:1/-1}
+.card{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;padding:14px 16px}
+.card-title{font-size:13px;font-weight:500;color:var(--text-primary);margin-bottom:3px}
+.card-sub{font-size:11px;color:var(--text-muted);margin-bottom:12px}
+.chart-wrap{position:relative}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.bar-label{font-size:11px;color:var(--text-secondary);width:126px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{flex:1;height:8px;border-radius:4px;background:var(--surface-1);overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;transition:width .5s ease}
+.bar-pct{font-size:11px;font-weight:500;width:32px;text-align:right;flex-shrink:0}
+.funnel-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.funnel-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.funnel-info{flex:1}
+.funnel-name{font-size:11px;color:var(--text-secondary);margin-bottom:3px}
+.funnel-track{height:6px;border-radius:3px;background:var(--surface-1);overflow:hidden}
+.funnel-fill{height:100%;border-radius:3px}
+.funnel-val{font-size:13px;font-weight:500;color:var(--text-primary);min-width:44px;text-align:right}
+.post-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border)}
+.post-row:last-child{border-bottom:none;padding-bottom:0}
+.post-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+.post-name{font-size:12px;font-weight:500;color:var(--text-primary)}
+.post-meta{font-size:11px;color:var(--text-muted)}
+.post-val{font-size:13px;font-weight:500;text-align:right}
+.post-sub{font-size:10px;color:var(--text-muted);text-align:right}
+.badge{display:inline-block;font-size:10px;font-weight:500;padding:2px 8px;border-radius:20px}
+.badge-green{background:#E1F5EE;color:#0F6E56}
+.badge-blue{background:#E6F1FB;color:#185FA5}
+.badge-amber{background:#FAEEDA;color:#854F0B}
+.badge-red{background:#FCEBEB;color:#A32D2D}
+.badge-purple{background:#EEEDFE;color:#534AB7}
+.kpi-table{width:100%;border-collapse:collapse;font-size:12px}
+.kpi-table th{text-align:left;font-size:11px;color:var(--text-muted);font-weight:400;padding:0 0 8px;border-bottom:0.5px solid var(--border)}
+.kpi-table th:not(:first-child){text-align:center}
+.kpi-table td{padding:8px 0;border-bottom:0.5px solid var(--border);color:var(--text-primary);vertical-align:middle}
+.kpi-table td:not(:first-child){text-align:center}
+.kpi-table tr:last-child td{border-bottom:none}
+.mini-bar-wrap{display:flex;align-items:center;gap:6px}
+.mini-bar-track{width:56px;height:5px;border-radius:3px;background:var(--surface-1);overflow:hidden;flex-shrink:0}
+.mini-bar-fill{height:100%;border-radius:3px}
+.edit-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:0.5px solid var(--border)}
+.edit-row:last-child{border-bottom:none}
+.edit-label{font-size:12px;color:var(--text-secondary);flex:1}
+.edit-input{width:90px;font-size:12px;padding:4px 8px;border-radius:var(--radius);border:0.5px solid var(--border-strong);background:var(--surface-1);color:var(--text-primary);text-align:right}
+.edit-input:focus{outline:none;border-color:#1D9E75}
+.section-pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;margin-bottom:10px}
+.stat-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:1.25rem}
+.stat-mini{background:var(--surface-1);border-radius:var(--radius);padding:10px 12px;text-align:center}
+.stat-mini-val{font-size:20px;font-weight:500;color:var(--text-primary)}
+.stat-mini-label{font-size:10px;color:var(--text-muted);margin-top:2px}
+.ts{font-size:10px;color:var(--text-muted);text-align:center;margin-top:1.25rem}
+.insight-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--border)}
+.insight-row:last-child{border-bottom:none}
+.insight-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+.insight-title{font-size:12px;font-weight:500;color:var(--text-primary);margin-bottom:2px}
+.insight-body{font-size:11px;color:var(--text-secondary);line-height:1.5}
+</style>
+
+<div class="dash">
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-mark"><i class="ti ti-activity-heartbeat" aria-hidden="true"></i></div>
+    <div class="logo-text">
+      <p>Jaderod Pharmacy</p>
+      <p>Digital Marketing Dashboard · Phase 1 · June 2026</p>
+    </div>
+  </div>
+  <div class="top-right">
+    <div class="live-badge"><span class="live-dot"></span>Live analysis</div>
+    <select class="period-select" id="periodSel" onchange="setPeriod(this.value)" aria-label="Select reporting period">
+      <option value="jun">June 2026</option>
+      <option value="wk1">Week 1 (Jun 4–8)</option>
+      <option value="wk2">Week 2 (Jun 9–16)</option>
+    </select>
+    <button class="btn" onclick="openEdit()" aria-label="Edit data"><i class="ti ti-edit" style="font-size:13px" aria-hidden="true"></i> Edit data</button>
+  </div>
+</div>
+
+<div class="nav" role="navigation" aria-label="Dashboard sections">
+  <button class="nav-btn active" onclick="setView('overview',this)"><i class="ti ti-layout-dashboard" aria-hidden="true"></i>Overview</button>
+  <button class="nav-btn" onclick="setView('website',this)"><i class="ti ti-world" aria-hidden="true"></i>Website</button>
+  <button class="nav-btn" onclick="setView('social',this)"><i class="ti ti-brand-instagram" aria-hidden="true"></i>Social</button>
+  <button class="nav-btn" onclick="setView('whatsapp',this)"><i class="ti ti-brand-whatsapp" aria-hidden="true"></i>WhatsApp</button>
+  <button class="nav-btn" onclick="setView('kpis',this)"><i class="ti ti-target" aria-hidden="true"></i>KPIs</button>
+  <button class="nav-btn" onclick="setView('insights',this)"><i class="ti ti-bulb" aria-hidden="true"></i>Insights</button>
+</div>
+
+<div id="v-overview">
+  <div class="kpi-row" id="ov-kpis"></div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Traffic sources</div>
+      <div class="card-sub">Where visitors are coming from</div>
+      <div id="src-bars"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Conversion funnel</div>
+      <div class="card-sub">Social → website → order</div>
+      <div id="funnel"></div>
+    </div>
+  </div>
+  <div class="card full">
+    <div class="card-title">Weekly sessions trend</div>
+    <div class="card-sub">Website traffic · June 4 – June 30, 2026</div>
+    <div class="chart-wrap" style="height:180px"><canvas id="trendChart" role="img" aria-label="Line chart of weekly website sessions, rising from 48 on June 4 to a peak of 387 on June 24 then settling at 350 by June 30"></canvas></div>
+  </div>
+</div>
+
+<div id="v-website" style="display:none">
+  <div class="kpi-row" id="web-kpis"></div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Traffic sources</div>
+      <div class="card-sub">Session source breakdown</div>
+      <div id="web-src-bars"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Device type</div>
+      <div class="card-sub">Mobile vs desktop vs tablet</div>
+      <div class="chart-wrap" style="height:180px"><canvas id="deviceChart" role="img" aria-label="Doughnut chart showing device breakdown: mobile 74%, desktop 21%, tablet 5%"></canvas></div>
+      <div style="display:flex;gap:12px;margin-top:10px;font-size:11px;color:var(--text-secondary)">
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#1D9E75;display:inline-block"></span>Mobile 74%</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#3B82F6;display:inline-block"></span>Desktop 21%</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#F59E0B;display:inline-block"></span>Tablet 5%</span>
+      </div>
+    </div>
+  </div>
+  <div class="card full">
+    <div class="card-title">Daily sessions</div>
+    <div class="card-sub">June 2026 — day by day</div>
+    <div class="chart-wrap" style="height:180px"><canvas id="dailyChart" role="img" aria-label="Bar chart of daily website sessions in June 2026, peaking around June 12 and June 21"></canvas></div>
+  </div>
+</div>
+
+<div id="v-social" style="display:none">
+  <div class="kpi-row" id="soc-kpis"></div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Reach by platform</div>
+      <div class="card-sub">Instagram vs Facebook vs TikTok</div>
+      <div class="chart-wrap" style="height:180px"><canvas id="platformChart" role="img" aria-label="Doughnut chart: Instagram 44%, Facebook 31%, TikTok 25% of total social reach"></canvas></div>
+      <div style="display:flex;gap:12px;margin-top:10px;font-size:11px;color:var(--text-secondary)">
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#1D9E75;display:inline-block"></span>Instagram 44%</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#3B82F6;display:inline-block"></span>Facebook 31%</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#8B5CF6;display:inline-block"></span>TikTok 25%</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Top posts</div>
+      <div class="card-sub">Ranked by reach — Phase 1</div>
+      <div id="top-posts"></div>
+    </div>
+  </div>
+  <div class="card full">
+    <div class="card-title">Follower growth</div>
+    <div class="card-sub">Weekly cumulative followers across all platforms</div>
+    <div class="chart-wrap" style="height:160px"><canvas id="growthChart" role="img" aria-label="Line chart showing follower growth from 0 on June 4 to 549 by June 30"></canvas></div>
+  </div>
+</div>
+
+<div id="v-whatsapp" style="display:none">
+  <div class="kpi-row" id="wa-kpis"></div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Enquiry topics</div>
+      <div class="card-sub">What customers are asking about</div>
+      <div id="wa-topics"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Daily enquiries</div>
+      <div class="card-sub">Messages received per day — June</div>
+      <div class="chart-wrap" style="height:190px"><canvas id="waChart" role="img" aria-label="Bar chart of daily WhatsApp enquiries in June 2026, with a spike of 8 on launch day June 4"></canvas></div>
+    </div>
+  </div>
+  <div class="card full">
+    <div class="card-title">Google Business Profile</div>
+    <div class="card-sub">Local search performance — June 2026</div>
+    <div class="stat-row" id="gbp-stats"></div>
+  </div>
+</div>
+
+<div id="v-kpis" style="display:none">
+  <div class="card full" style="margin-bottom:10px">
+    <div class="card-title">KPI scorecard — Phase 1</div>
+    <div class="card-sub">Targets set at launch · actuals at June 30, 2026 · click a row to update</div>
+    <table class="kpi-table" id="kpi-table" style="margin-top:8px">
+      <thead><tr><th style="width:42%">Metric</th><th>Target</th><th>Actual</th><th>Score</th><th>Status</th></tr></thead>
+      <tbody id="kpi-tbody"></tbody>
+    </table>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Score distribution</div>
+      <div class="card-sub">KPI status breakdown</div>
+      <div class="chart-wrap" style="height:160px"><canvas id="scoreChart" role="img" aria-label="Doughnut chart: 5 KPIs exceeded, 3 met, 1 close, 1 missed"></canvas></div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;font-size:11px;color:var(--text-secondary)">
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#1D9E75;display:inline-block"></span>Exceeded</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#3B82F6;display:inline-block"></span>Met</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#F59E0B;display:inline-block"></span>Close</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#E24B4A;display:inline-block"></span>Missed</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Phase 2 targets</div>
+      <div class="card-sub">Progress toward July 2026 goals</div>
+      <div id="p2-bars"></div>
+      <button class="btn" style="margin-top:12px;width:100%;justify-content:center;display:flex" onclick="sendPrompt('Based on Jaderod Phase 1 KPI results, what should our Phase 2 strategy focus on?')">Plan Phase 2 strategy ↗</button>
+    </div>
+  </div>
+</div>
+
+<div id="v-insights" style="display:none">
+  <div class="card full" style="margin-bottom:10px">
+    <div class="card-title">AI-powered insights</div>
+    <div class="card-sub">Data-driven recommendations for Phase 2 — based on June 2026 results</div>
+    <div id="insights-list" style="margin-top:8px"></div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Channels ranked by ROI</div>
+      <div class="card-sub">Which channels are delivering the most value</div>
+      <div id="roi-bars"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Quick actions</div>
+      <div class="card-sub">Next steps to take this week</div>
+      <div id="quick-actions"></div>
+    </div>
+  </div>
+</div>
+
+<div id="edit-panel" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:100;align-items:center;justify-content:center">
+  <div style="background:var(--surface-2);border-radius:12px;border:0.5px solid var(--border);padding:1.25rem;width:340px;max-height:90vh;overflow-y:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+      <p style="font-weight:500;font-size:14px;color:var(--text-primary)">Edit data</p>
+      <button onclick="closeEdit()" style="background:none;border:none;cursor:pointer;font-size:18px;color:var(--text-muted)" aria-label="Close edit panel">×</button>
+    </div>
+    <p style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Update any metric — all charts and KPIs refresh instantly.</p>
+    <div id="edit-fields"></div>
+    <button class="btn active" style="width:100%;margin-top:14px;padding:8px" onclick="applyEdit()">Apply changes</button>
+  </div>
+</div>
+
+<div class="ts" id="ts">Last updated: July 10, 2026 · 09:41 EAT · Data editable — click "Edit data" to update</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+let data = {
+  sessions:1247, users:934, bounceRate:58.3, sessionDuration:"2m 14s",
+  socialReach:4830, igFollowers:312, fbFollowers:148, ttFollowers:89,
+  igReach:2140, fbReach:1480, ttReach:1210,
+  igEng:5.1, fbEng:3.4, ttEng:6.2,
+  waEnquiries:68, waOrders:34, waDelivery:80, waResponse:4.2,
+  gbpImpressions:1840, gbpViews:623, gbpDirections:89, gbpWaClicks:142, gbpReviews:11, gbpRating:4.7,
+};
+
+const PERIODS = {
+  jun:{sessions:1247,socialReach:4830,waEnquiries:68,waOrders:34},
+  wk1:{sessions:312,socialReach:1250,waEnquiries:18,waOrders:8},
+  wk2:{sessions:498,socialReach:1890,waEnquiries:24,waOrders:12},
+};
+
+let charts = {};
+let currentView = 'overview';
+
+function n(v,dec=0){return typeof v==='number'?v.toLocaleString(undefined,{minimumFractionDigits:dec,maximumFractionDigits:dec}):v}
+
+function setPeriod(p){
+  const pd = PERIODS[p];
+  Object.assign(data, pd);
+  renderAll();
+  updateCharts();
+}
+
+function setView(name, btn){
+  ['overview','website','social','whatsapp','kpis','insights'].forEach(v=>{
+    document.getElementById('v-'+v).style.display = v===name?'':'none';
+  });
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  currentView = name;
+  setTimeout(()=>{
+    if(name==='overview') initTrend();
+    if(name==='website'){initDevice();initDaily();}
+    if(name==='social'){initPlatform();initGrowth();}
+    if(name==='whatsapp') initWa();
+    if(name==='kpis'){buildKpiTable();initScore();}
+  },50);
+}
+
+function renderAll(){
+  buildOvKpis();
+  buildWebKpis();
+  buildSocKpis();
+  buildWaKpis();
+  buildSrcBars('src-bars');
+  buildSrcBars('web-src-bars');
+  buildFunnel();
+  buildTopPosts();
+  buildWaTopics();
+  buildGbpStats();
+  buildP2Bars();
+  buildInsights();
+  buildRoiBars();
+  buildQuickActions();
+}
+
+function kpiCard(container, items){
+  const el = document.getElementById(container);
+  if(!el) return;
+  el.innerHTML = items.map(i=>`
+    <div class="kpi-card ${i.accent?'accent':''}">
+      <div class="kpi-label">${i.label}</div>
+      <div class="kpi-val">${i.val}</div>
+      <div class="kpi-delta ${i.cls||'delta-neutral'}"><i class="ti ti-${i.icon||'minus'}" style="font-size:11px" aria-hidden="true"></i>${i.delta}</div>
+    </div>`).join('');
+}
+
+function buildOvKpis(){
+  kpiCard('ov-kpis',[
+    {label:'Website sessions',val:n(data.sessions),delta:'+34% wk-on-wk',cls:'delta-up',icon:'arrow-up',accent:true},
+    {label:'Social reach',val:n(data.socialReach),delta:'IG + FB + TikTok',cls:'delta-neutral',icon:'users'},
+    {label:'WhatsApp enquiries',val:n(data.waEnquiries),delta:'Target was 30+',cls:'delta-up',icon:'arrow-up'},
+    {label:'Orders completed',val:n(data.waOrders),delta:Math.round(data.waOrders/data.waEnquiries*100)+'% conv. rate',cls:'delta-up',icon:'arrow-up'},
+    {label:'Avg engagement',val:'4.2%',delta:'Industry avg 1–3%',cls:'delta-up',icon:'arrow-up'},
+    {label:'Google reviews',val:n(data.gbpReviews),delta:data.gbpRating+'★ avg rating',cls:'delta-up',icon:'star'},
+  ]);
+}
+
+function buildWebKpis(){
+  kpiCard('web-kpis',[
+    {label:'Total sessions',val:n(data.sessions),delta:'+34% wk-on-wk',cls:'delta-up',icon:'arrow-up',accent:true},
+    {label:'Unique users',val:n(data.users),delta:'74% mobile traffic',cls:'delta-neutral',icon:'device-mobile'},
+    {label:'Bounce rate',val:data.bounceRate+'%',delta:'Down from 65% at launch',cls:'delta-up',icon:'arrow-down'},
+    {label:'Avg session',val:data.sessionDuration,delta:'Content is engaging',cls:'delta-up',icon:'clock'},
+  ]);
+}
+
+function buildSocKpis(){
+  const total = data.igFollowers+data.fbFollowers+data.ttFollowers;
+  kpiCard('soc-kpis',[
+    {label:'Instagram followers',val:n(data.igFollowers),delta:'+312 this month',cls:'delta-up',icon:'arrow-up',accent:true},
+    {label:'Facebook followers',val:n(data.fbFollowers),delta:'+148 this month',cls:'delta-up',icon:'arrow-up'},
+    {label:'TikTok followers',val:n(data.ttFollowers),delta:'+89 this month',cls:'delta-up',icon:'arrow-up'},
+    {label:'Total followers',val:n(total),delta:'Target was 500+',cls:'delta-up',icon:'check'},
+    {label:'Instagram reach',val:n(data.igReach),delta:'Eng rate '+data.igEng+'%',cls:'delta-up',icon:'arrow-up'},
+    {label:'TikTok eng. rate',val:data.ttEng+'%',delta:'Highest platform',cls:'delta-up',icon:'star'},
+  ]);
+}
+
+function buildWaKpis(){
+  const convRate = Math.round(data.waOrders/data.waEnquiries*100);
+  kpiCard('wa-kpis',[
+    {label:'Total enquiries',val:n(data.waEnquiries),delta:'Target was 30+',cls:'delta-up',icon:'arrow-up',accent:true},
+    {label:'Orders completed',val:n(data.waOrders),delta:convRate+'% conversion rate',cls:'delta-up',icon:'arrow-up'},
+    {label:'Broadcast delivery',val:data.waDelivery+'%+',delta:'Opening broadcast',cls:'delta-up',icon:'check'},
+    {label:'Avg response time',val:data.waResponse+'h',delta:'Target under 2h',cls:'delta-down',icon:'arrow-down'},
+    {label:'WA clicks (Maps)',val:n(data.gbpWaClicks),delta:'From Google profile',cls:'delta-up',icon:'map-pin'},
+    {label:'Maps impressions',val:n(data.gbpImpressions),delta:'Target 200+',cls:'delta-up',icon:'arrow-up'},
+  ]);
+}
+
+function buildSrcBars(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const srcs=[
+    {l:'Instagram / TikTok Reels',p:42,c:'#1D9E75'},
+    {l:'WhatsApp link clicks',p:28,c:'#0F6E56'},
+    {l:'Direct (typed URL)',p:14,c:'#F59E0B'},
+    {l:'Google Search',p:9,c:'#3B82F6'},
+    {l:'Facebook posts',p:5,c:'#8B5CF6'},
+    {l:'Other',p:2,c:'#888780'},
+  ];
+  el.innerHTML = srcs.map(s=>`
+    <div class="bar-row">
+      <span class="bar-label">${s.l}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${s.p}%;background:${s.c}"></div></div>
+      <span class="bar-pct" style="color:${s.c}">${s.p}%</span>
+    </div>`).join('');
+}
+
+function buildFunnel(){
+  const el = document.getElementById('funnel');
+  if(!el) return;
+  const steps=[
+    {name:'Social reach',val:data.socialReach,pct:100,c:'#1D9E75',bg:'#E1F5EE',icon:'antenna-bars-5'},
+    {name:'Website sessions',val:data.sessions,pct:Math.round(data.sessions/data.socialReach*100),c:'#3B82F6',bg:'#E6F1FB',icon:'world'},
+    {name:'WhatsApp clicks',val:412,pct:8,c:'#F59E0B',bg:'#FEF3C7',icon:'brand-whatsapp'},
+    {name:'Enquiries',val:data.waEnquiries,pct:Math.round(data.waEnquiries/data.socialReach*100),c:'#8B5CF6',bg:'#EEEDFE',icon:'message-circle'},
+    {name:'Orders',val:data.waOrders,pct:Math.round(data.waOrders/data.socialReach*100),c:'#1D9E75',bg:'#E1F5EE',icon:'shopping-bag'},
+  ];
+  el.innerHTML = steps.map(s=>`
+    <div class="funnel-row">
+      <div class="funnel-icon" style="background:${s.bg}"><i class="ti ti-${s.icon}" style="color:${s.c};font-size:14px" aria-hidden="true"></i></div>
+      <div class="funnel-info">
+        <div class="funnel-name">${s.name}</div>
+        <div class="funnel-track"><div class="funnel-fill" style="width:${s.pct}%;background:${s.c}"></div></div>
+      </div>
+      <div class="funnel-val">${n(s.val)}</div>
+    </div>`).join('');
+}
+
+function buildTopPosts(){
+  const el = document.getElementById('top-posts');
+  if(!el) return;
+  const posts=[
+    {name:'BTS Morning Routine',meta:'Jun 10 · TikTok',val:'847 views',sub:'Eng 6.2%',bg:'#EEEDFE',ic:'video',ic_c:'#534AB7'},
+    {name:'Madaraka Day',meta:'Jun 12 · IG + FB',val:'1,020 impr.',sub:'Eng 4.1%',bg:'#E6F1FB',ic:'flag',ic_c:'#185FA5'},
+    {name:'Grand Reveal Reel',meta:'Jun 4 · Instagram',val:'612 views',sub:'Eng 8.3%',bg:'#E1F5EE',ic:'video',ic_c:'#0F6E56'},
+    {name:'Myth vs Fact',meta:'Jun 11 · Instagram',val:'430 reach',sub:'Eng 7.8%',bg:'#FEF3C7',ic:'chart-bar',ic_c:'#854F0B'},
+  ];
+  el.innerHTML = posts.map(p=>`
+    <div class="post-row">
+      <div class="post-icon" style="background:${p.bg}"><i class="ti ti-${p.ic}" style="color:${p.ic_c}" aria-hidden="true"></i></div>
+      <div style="flex:1"><div class="post-name">${p.name}</div><div class="post-meta">${p.meta}</div></div>
+      <div><div class="post-val" style="color:${p.ic_c}">${p.val}</div><div class="post-sub">${p.sub}</div></div>
+    </div>`).join('');
+}
+
+function buildWaTopics(){
+  const el = document.getElementById('wa-topics');
+  if(!el) return;
+  const topics=[
+    {l:'Medication orders',p:44,c:'#1D9E75'},
+    {l:'Delivery questions',p:26,c:'#3B82F6'},
+    {l:'Pricing enquiries',p:16,c:'#F59E0B'},
+    {l:'Health advice',p:10,c:'#8B5CF6'},
+    {l:'Other',p:4,c:'#888780'},
+  ];
+  el.innerHTML = topics.map(t=>`
+    <div class="bar-row">
+      <span class="bar-label">${t.l}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${t.p}%;background:${t.c}"></div></div>
+      <span class="bar-pct" style="color:${t.c}">${t.p}%</span>
+    </div>`).join('');
+}
+
+function buildGbpStats(){
+  const el = document.getElementById('gbp-stats');
+  if(!el) return;
+  const stats=[
+    {v:n(data.gbpImpressions),l:'Search impressions'},
+    {v:n(data.gbpViews),l:'Profile views'},
+    {v:n(data.gbpDirections),l:'Direction requests'},
+    {v:n(data.gbpWaClicks),l:'WA clicks (Maps)'},
+    {v:n(data.gbpReviews)+' · '+data.gbpRating+'★',l:'Reviews & rating'},
+  ];
+  el.innerHTML = stats.map(s=>`
+    <div class="stat-mini">
+      <div class="stat-mini-val">${s.v}</div>
+      <div class="stat-mini-label">${s.l}</div>
+    </div>`).join('');
+}
+
+function buildKpiTable(){
+  const tbody = document.getElementById('kpi-tbody');
+  if(!tbody) return;
+  const kpis=[
+    {m:'IG + FB + TikTok followers',t:'500+',a:n(data.igFollowers+data.fbFollowers+data.ttFollowers),pct:Math.min((data.igFollowers+data.fbFollowers+data.ttFollowers)/500*100,100),st:'MET'},
+    {m:'Avg Instagram post reach',t:'300+',a:n(data.igReach/12|0),pct:Math.min((data.igReach/12)/300*100,100),st:'EXCEEDED'},
+    {m:'Grand Reveal Reel views (48hrs)',t:'500+',a:'612',pct:100,st:'EXCEEDED'},
+    {m:'Facebook engagement rate',t:'3–5%',a:data.fbEng+'%',pct:85,st:'MET'},
+    {m:'WhatsApp enquiries',t:'30+',a:n(data.waEnquiries),pct:Math.min(data.waEnquiries/30*100,100),st:'EXCEEDED'},
+    {m:'Google Maps impressions',t:'200+',a:n(data.gbpImpressions),pct:100,st:'EXCEEDED'},
+    {m:'Walk-in customers',t:'40+',a:'31',pct:78,st:'MISSED'},
+    {m:'Google reviews',t:'10+',a:n(data.gbpReviews),pct:Math.min(data.gbpReviews/10*100,100),st:'MET'},
+    {m:'Instagram story views',t:'100+',a:'87',pct:87,st:'CLOSE'},
+    {m:'TikTok video views',t:'300+',a:'423',pct:100,st:'EXCEEDED'},
+  ];
+  const sc={EXCEEDED:{cls:'badge-green',l:'Exceeded',c:'#1D9E75'},MET:{cls:'badge-blue',l:'Met',c:'#3B82F6'},CLOSE:{cls:'badge-amber',l:'Close',c:'#F59E0B'},MISSED:{cls:'badge-red',l:'Missed',c:'#E24B4A'}};
+  tbody.innerHTML = kpis.map(k=>{
+    const s=sc[k.st];
+    return `<tr>
+      <td style="font-size:12px">${k.m}</td>
+      <td style="font-size:12px;color:var(--text-muted)">${k.t}</td>
+      <td style="font-size:12px;font-weight:500;color:${s.c}">${k.a}</td>
+      <td><div class="mini-bar-wrap"><div class="mini-bar-track"><div class="mini-bar-fill" style="width:${k.pct}%;background:${s.c}"></div></div><span style="font-size:10px;color:var(--text-muted)">${Math.round(k.pct)}%</span></div></td>
+      <td><span class="badge ${k.cls||s.cls}">${s.l}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function buildP2Bars(){
+  const el = document.getElementById('p2-bars');
+  if(!el) return;
+  const items=[
+    {l:'Followers (→1,200)',v:data.igFollowers+data.fbFollowers+data.ttFollowers,max:1200,c:'#1D9E75'},
+    {l:'Sessions (→2,500)',v:data.sessions,max:2500,c:'#3B82F6'},
+    {l:'WA orders (→80)',v:data.waOrders,max:80,c:'#F59E0B'},
+    {l:'Reviews (→30)',v:data.gbpReviews,max:30,c:'#8B5CF6'},
+    {l:'IG reach/post (→700)',v:Math.round(data.igReach/12),max:700,c:'#1D9E75'},
+  ];
+  el.innerHTML = items.map(i=>{
+    const pct=Math.min(Math.round(i.v/i.max*100),100);
+    return `<div class="bar-row">
+      <span class="bar-label" style="width:150px">${i.l}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${i.c}"></div></div>
+      <span class="bar-pct" style="color:${i.c}">${pct}%</span>
+    </div>`;
+  }).join('');
+}
+
+function buildInsights(){
+  const el = document.getElementById('insights-list');
+  if(!el) return;
+  const convRate = Math.round(data.waOrders/data.waEnquiries*100);
+  const insights=[
+    {ic:'brand-whatsapp',bg:'#E1F5EE',ic_c:'#0F6E56',title:'WhatsApp is the #1 conversion channel',body:`${n(data.waEnquiries)} enquiries vs a 30+ target — ${convRate}% converted to orders. In Phase 2, invest in WhatsApp catalog, quick replies, and status updates. Response time of ${data.waResponse}h needs to come under 2h.`},
+    {ic:'map-pin',bg:'#E6F1FB',ic_c:'#185FA5',title:'Google Business is underconverting',body:`${n(data.gbpImpressions)} Maps impressions but only ${n(data.gbpDirections)} direction requests. Add a WhatsApp CTA directly to your Google profile and post a weekly offer to close the gap.`},
+    {ic:'video',bg:'#EEEDFE',ic_c:'#534AB7',title:'Reels and TikToks far outperform static posts',body:`Every video post achieved 3–8× the reach of static images. Phase 2 content plan should be at least 60% video — short Reels and TikToks with health tips, FAQs, and behind-the-scenes content.`},
+    {ic:'star',bg:'#FEF3C7',ic_c:'#854F0B',title:`${data.gbpReviews} Google reviews — accelerate this`,body:`${data.gbpRating}★ average is strong. Every completed WhatsApp order should include a review request message. Target 30+ reviews by end of Phase 2 to rank in the top 3 locally on Maps.`},
+    {ic:'clock',bg:'#FCEBEB',ic_c:'#A32D2D',title:'Sunday posts underperform — shift to Monday 7am',body:`Sunday health tips averaged 30% lower reach. Nairobi commuter audience is most active on weekday mornings 7–8am. Move all Sunday content to Monday morning for a significant free reach boost.`},
+  ];
+  el.innerHTML = insights.map(i=>`
+    <div class="insight-row">
+      <div class="insight-icon" style="background:${i.bg}"><i class="ti ti-${i.ic}" style="color:${i.ic_c}" aria-hidden="true"></i></div>
+      <div><div class="insight-title">${i.title}</div><div class="insight-body">${i.body}</div></div>
+    </div>`).join('');
+}
+
+function buildRoiBars(){
+  const el = document.getElementById('roi-bars');
+  if(!el) return;
+  const items=[
+    {l:'WhatsApp',score:94,c:'#1D9E75'},
+    {l:'Google Business',score:82,c:'#3B82F6'},
+    {l:'Instagram Reels',score:78,c:'#8B5CF6'},
+    {l:'TikTok',score:71,c:'#F59E0B'},
+    {l:'Facebook',score:58,c:'#185FA5'},
+  ];
+  el.innerHTML = items.map(i=>`
+    <div class="bar-row">
+      <span class="bar-label">${i.l}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${i.score}%;background:${i.c}"></div></div>
+      <span class="bar-pct" style="color:${i.c}">${i.score}</span>
+    </div>`).join('');
+}
+
+function buildQuickActions(){
+  const el = document.getElementById('quick-actions');
+  if(!el) return;
+  const actions=[
+    {ic:'brand-whatsapp',bg:'#E1F5EE',ic_c:'#0F6E56',text:'Set up WhatsApp quick replies for top 5 FAQs',prompt:'Help me write WhatsApp quick reply templates for Jaderod Pharmacy covering medication orders, delivery, pricing, health advice, and prescription requests'},
+    {ic:'star',bg:'#FEF3C7',ic_c:'#854F0B',text:'Send review requests to all June orders',prompt:'Write a friendly WhatsApp message asking Jaderod Pharmacy customers to leave a Google review'},
+    {ic:'video',bg:'#EEEDFE',ic_c:'#534AB7',text:'Plan 4 Reels for next week',prompt:'Give me 4 creative Instagram Reel ideas for Jaderod Pharmacy for next week, each under 30 seconds'},
+    {ic:'map-pin',bg:'#E6F1FB',ic_c:'#185FA5',text:'Add WhatsApp CTA to Google Profile',prompt:'Write a compelling Google Business Profile description for Jaderod Pharmacy that includes a WhatsApp call-to-action'},
+  ];
+  el.innerHTML = actions.map(a=>`
+    <div class="post-row" style="cursor:pointer" onclick="sendPrompt('${a.prompt.replace(/'/g,"\\'")}')">
+      <div class="post-icon" style="background:${a.bg}"><i class="ti ti-${a.ic}" style="color:${a.ic_c}" aria-hidden="true"></i></div>
+      <div style="flex:1"><div class="post-name" style="font-size:11px">${a.text}</div></div>
+      <i class="ti ti-arrow-right" style="font-size:13px;color:var(--text-muted)" aria-hidden="true"></i>
+    </div>`).join('');
+}
+
+let chartsInited = {};
+function initChart(id, config){
+  if(charts[id]){charts[id].destroy();delete charts[id];}
+  const el = document.getElementById(id);
+  if(!el) return;
+  charts[id] = new Chart(el, config);
+}
+
+function initTrend(){
+  if(chartsInited.trend) return; chartsInited.trend=true;
+  initChart('trendChart',{type:'line',data:{
+    labels:['Jun 4','Jun 7','Jun 10','Jun 14','Jun 17','Jun 21','Jun 24','Jun 28','Jun 30'],
+    datasets:[{label:'Sessions',data:[48,112,198,256,312,354,387,373,350],borderColor:'#1D9E75',borderWidth:2,pointBackgroundColor:'#1D9E75',pointRadius:4,fill:true,backgroundColor:'rgba(29,158,117,0.07)',tension:0.35}]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},color:'#888780',maxRotation:0}},y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},color:'#888780'},beginAtZero:true}}}});
+}
+
+function initDevice(){
+  if(chartsInited.device) return; chartsInited.device=true;
+  initChart('deviceChart',{type:'doughnut',data:{labels:['Mobile','Desktop','Tablet'],datasets:[{data:[74,21,5],backgroundColor:['#1D9E75','#3B82F6','#F59E0B'],borderWidth:2,borderColor:'transparent'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false}}}});
+}
+
+function initDaily(){
+  if(chartsInited.daily) return; chartsInited.daily=true;
+  initChart('dailyChart',{type:'bar',data:{
+    labels:['4','5','6','7','8','9','10','11','12','14','15','16','17','18','19','21','22','23','24','25','26','28','29','30'],
+    datasets:[{label:'Sessions',data:[48,32,28,24,36,42,56,68,88,72,64,58,62,54,48,78,92,84,98,76,68,62,58,70],backgroundColor:'#1D9E75',borderRadius:3}]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:'#888780',autoSkip:true,maxTicksLimit:12}},y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:9},color:'#888780'},beginAtZero:true}}}});
+}
+
+function initPlatform(){
+  if(chartsInited.platform) return; chartsInited.platform=true;
+  initChart('platformChart',{type:'doughnut',data:{labels:['Instagram','Facebook','TikTok'],datasets:[{data:[data.igReach,data.fbReach,data.ttReach],backgroundColor:['#1D9E75','#3B82F6','#8B5CF6'],borderWidth:2,borderColor:'transparent'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false}}}});
+}
+
+function initGrowth(){
+  if(chartsInited.growth) return; chartsInited.growth=true;
+  initChart('growthChart',{type:'line',data:{
+    labels:['Jun 4','Jun 8','Jun 14','Jun 20','Jun 26','Jun 30'],
+    datasets:[
+      {label:'Instagram',data:[0,87,164,241,289,312],borderColor:'#1D9E75',borderWidth:2,pointRadius:3,fill:false,tension:0.3},
+      {label:'Facebook',data:[0,42,89,121,138,148],borderColor:'#3B82F6',borderWidth:2,pointRadius:3,fill:false,tension:0.3},
+      {label:'TikTok',data:[0,24,51,72,81,89],borderColor:'#8B5CF6',borderWidth:2,pointRadius:3,fill:false,tension:0.3},
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#888780'}},y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},color:'#888780'},beginAtZero:true}}}});
+}
+
+function initWa(){
+  if(chartsInited.wa) return; chartsInited.wa=true;
+  initChart('waChart',{type:'bar',data:{
+    labels:['4','5','6','7','8','9','10','11','12','14','15','16','17','18','19','21','22','23','24','25','26','28','29','30'],
+    datasets:[{label:'Enquiries',data:[8,3,2,1,2,5,4,6,7,3,2,2,3,1,2,4,3,4,3,2,1,3,2,4],backgroundColor:'#1D9E75',borderRadius:3}]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:'#888780',autoSkip:true,maxTicksLimit:12}},y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:9},color:'#888780',stepSize:2},beginAtZero:true}}}});
+}
+
+let scoreInited=false;
+function initScore(){
+  if(scoreInited) return; scoreInited=true;
+  initChart('scoreChart',{type:'doughnut',data:{labels:['Exceeded','Met','Close','Missed'],datasets:[{data:[5,3,1,1],backgroundColor:['#1D9E75','#3B82F6','#F59E0B','#E24B4A'],borderWidth:2,borderColor:'transparent'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false}}}});
+}
+
+function updateCharts(){
+  chartsInited = {};
+  Object.values(charts).forEach(c=>c.destroy());
+  charts = {};
+  setTimeout(()=>{
+    if(currentView==='overview') initTrend();
+    if(currentView==='website'){initDevice();initDaily();}
+    if(currentView==='social'){initPlatform();initGrowth();}
+    if(currentView==='whatsapp') initWa();
+    if(currentView==='kpis'){buildKpiTable();initScore();}
+  },50);
+}
+
+function openEdit(){
+  const fields=[
+    {k:'sessions',l:'Website sessions'},
+    {k:'users',l:'Unique users'},
+    {k:'socialReach',l:'Total social reach'},
+    {k:'igFollowers',l:'Instagram followers'},
+    {k:'fbFollowers',l:'Facebook followers'},
+    {k:'ttFollowers',l:'TikTok followers'},
+    {k:'waEnquiries',l:'WhatsApp enquiries'},
+    {k:'waOrders',l:'Orders completed'},
+    {k:'waResponse',l:'Avg response time (hrs)'},
+    {k:'gbpImpressions',l:'Google Maps impressions'},
+    {k:'gbpReviews',l:'Google reviews'},
+    {k:'gbpRating',l:'Avg rating (e.g. 4.7)'},
+  ];
+  document.getElementById('edit-fields').innerHTML = fields.map(f=>`
+    <div class="edit-row">
+      <label class="edit-label" for="ef-${f.k}">${f.l}</label>
+      <input class="edit-input" id="ef-${f.k}" type="number" step="any" value="${data[f.k]}" aria-label="${f.l}">
+    </div>`).join('');
+  document.getElementById('edit-panel').style.display='flex';
+}
+
+function closeEdit(){document.getElementById('edit-panel').style.display='none';}
+
+function applyEdit(){
+  const fields=['sessions','users','socialReach','igFollowers','fbFollowers','ttFollowers','waEnquiries','waOrders','waResponse','gbpImpressions','gbpReviews','gbpRating'];
+  fields.forEach(k=>{
+    const el=document.getElementById('ef-'+k);
+    if(el) data[k]=parseFloat(el.value)||0;
+  });
+  closeEdit();
+  renderAll();
+  updateCharts();
+  const now=new Date();
+  document.getElementById('ts').textContent=`Last updated: July 10, 2026 · ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} EAT · Data manually updated`;
+}
+
+renderAll();
+setTimeout(initTrend, 300);
+</script>
